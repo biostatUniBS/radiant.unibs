@@ -4,7 +4,7 @@ shinyServer(function(input, output, session) {
     source(file.path(getOption("radiant.path.data"),"app/init.R"), encoding = getOption("radiant.encoding"), local = TRUE)
     source(file.path(getOption("radiant.path.data"),"app/radiant.R"), encoding = getOption("radiant.encoding"), local = TRUE)
 
-    source(file.path(getOption("radiant.path.biostat"),"app/init.R"), encoding = getOption("radiant.encoding"), local = TRUE)
+    ## source(file.path(getOption("radiant.path.biostat"),"app/init.R"), encoding = getOption("radiant.encoding"), local = TRUE)
     
     ## source data & app tools from radiant.data
     for (file in list.files(c(file.path(getOption("radiant.path.data"),"app/tools/app"),
