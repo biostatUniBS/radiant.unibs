@@ -2,35 +2,29 @@
 options(radiant.path.data = system.file(package = "radiant.data"))
 source(file.path(getOption("radiant.path.data"), "app/global.R"), encoding = getOption("radiant.encoding", default = "UTF-8"), local = TRUE)
 
-options(radiant.path.data = system.file(package = "radiant.data"))
+ifelse (grepl("radiant.biostat", getwd()) && file.exists("../../inst") , "..", system.file(package = "radiant.biostat")) %>%
+  options(radiant.path.biostat = .)
+
+## setting path for figures in help files
+## addResourcePath("figures_design", "tools/help/figures/")
+
+## Set options for required packages
 options(radiant.path.basics = system.file(package = "radiant.basics"))
 options(radiant.path.model = system.file(package = "radiant.model"))
 options(radiant.path.design = system.file(package = "radiant.design"))
-## options(radiant.path.multivariate = system.file(package = "radiant.multivariate"))
-options(radiant.path.biostat = system.file(package = "radiant.biostat"))
-
-# sourcing from radiant base, note that path is set in base/global.R
-## source(file.path(getOption("radiant.path.data"), "app/global.R"), encoding = getOption("radiant.encoding", default = "UTF-8"), local = TRUE)
-
-## setting path for figures in help files
-addResourcePath("figures_basics", file.path(getOption("radiant.path.basics"),"app/tools/help/figures/"))
-addResourcePath("figures_model", file.path(getOption("radiant.path.model"),"app/tools/help/figures/"))
-addResourcePath("figures_design", file.path(getOption("radiant.path.design"),"app/tools/help/figures/"))
-## addResourcePath("figures_multivariate", file.path(getOption("radiant.path.multivariate"),"app/tools/help/figures/"))
-## addResourcePath("figures_biostat", file.path(getOption("radiant.path.biostat"),"app/tools/help/figures/"))
 
 ## loading url information
 source(file.path(getOption("radiant.path.basics"), "app/init.R"), encoding = getOption("radiant.encoding"), local = TRUE)
 source(file.path(getOption("radiant.path.model"), "app/init.R"), encoding = getOption("radiant.encoding"), local = TRUE)
 source(file.path(getOption("radiant.path.design"), "app/init.R"), encoding = getOption("radiant.encoding"), local = TRUE)
-## source(file.path(getOption("radiant.path.multivariate"), "app/init.R"), encoding = getOption("radiant.encoding"), local = TRUE)
-source(file.path(getOption("radiant.path.biostat"), "app/init.R"), encoding = getOption("radiant.encoding"), local = TRUE)
 
+
+## loading urls and ui
+source("init.R", encoding = getOption("radiant.encoding"), local = TRUE)
 options(radiant.url.patterns = make_url_patterns())
 
 
-
-##### Modified from radiant.data/inst/app/global.R
+## We don't want some menus item
 
 options(radiant.shared_ui =
   tagList(
@@ -69,3 +63,27 @@ options(radiant.shared_ui =
     )
   )
 )
+
+
+help_menu <- function(hlp) {
+    tagList(
+        navbarMenu("", icon = icon("question-circle"),
+                   tabPanel("Help", uiOutput(hlp), icon = icon("question"))
+                   ## ,
+                   ## tabPanel("Videos", uiOutput("help_videos"), icon = icon("film")),
+                   ## tabPanel("About", uiOutput("help_about"), icon = icon("info")),
+                   ## tabPanel(tags$a("", href = "http://radiant-rstats.github.io/docs/", target = "_blank",
+                   ##          list(icon("globe"), "Radiant docs"))),
+                   ## tabPanel(tags$a("", href = "https://github.com/vnijs/radiant/issues", target = "_blank",
+                   ##          list(icon("github"), "Report issue")))
+                   ),
+        tags$head(
+            tags$script(src = "js/session.js"),
+            tags$script(src = "js/returnTextAreaBinding.js"),
+            tags$script(src = "js/returnTextInputBinding.js"),
+                                        # tags$script(src = "js/draggable_modal.js"),
+            tags$script(src = "js/video_reset.js"),
+            tags$link(rel = "shortcut icon", href = "imgs/icon.png")
+        )
+    )
+}
