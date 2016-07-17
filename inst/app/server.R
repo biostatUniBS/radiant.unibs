@@ -49,7 +49,9 @@ shinyServer(function(input, output, session) {
   ## saveStateOnRefresh(session)
 
     ## SC: stop app when session is ended, browser close or refresh
-    session$onSessionEnded(function() { stopApp() })
+    session$onSessionEnded(function() {
+        session$sendCustomMessage(type = "closeWindow", message = "message")
+        stopApp() })
     
     
 })
