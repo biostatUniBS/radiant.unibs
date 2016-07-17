@@ -1,0 +1,22 @@
+Package: radiant.biostat
+Type: Package
+Title: Biostastics menu for Radiant. Builds on the radiant.data, radiant.basics and radiant.model packages
+Version: 0.0.1
+Date: 2016-7-16
+Authors@R: person("Stefano", "Calza", , "stefano.calza@unibs.it", c("aut", "cre"))
+Description: Biostatistics menu for Radiant.
+Depends:
+    R (>= 3.2.0),
+    shiny (>= 0.13.2.9003),
+    radiant.data (>= 0.5.2),
+    ez,
+    descr
+Imports:
+    shiny (>= 0.13.2.9003),
+    import (>= 1.1.0),
+    methods
+URL:
+BugReports:
+License: AGPL-3 | file LICENSE
+LazyData: true
+RoxygenNote: 5.0.1
