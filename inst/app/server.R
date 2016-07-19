@@ -1,5 +1,9 @@
 shinyServer(function(input, output, session) {
 
+  ## http://bioinfo1.med.unibs:3800/biostat/?code=anorexia -> opens anorexia.rda
+  query <- observe({parseQueryString(session$clientData$url_search)})
+  r_data = init_data(data_query = query)
+  
   ## source shared functions
   source(file.path(getOption("radiant.path.data"),"app/init.R"), encoding = getOption("radiant.encoding"), local = TRUE)
   source(file.path(getOption("radiant.path.data"),"app/radiant.R"), encoding = getOption("radiant.encoding"), local = TRUE)
@@ -49,9 +53,7 @@ shinyServer(function(input, output, session) {
   ## saveStateOnRefresh(session)
 
     ## SC: stop app when session is ended, browser close or refresh
-    session$onSessionEnded(function() {
-        session$sendCustomMessage(type = "closeWindow", message = "message")
-        stopApp() })
+    session$onSessionEnded(function() {stopApp() })
     
     
 })

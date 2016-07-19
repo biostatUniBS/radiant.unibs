@@ -14,6 +14,7 @@ options(radiant.path.model = system.file(package = "radiant.model"))
 options(radiant.path.design = system.file(package = "radiant.design"))
 
 ## loading url information
+## source(file.path(getOption("radiant.path.data"), "app/init.R"), encoding = getOption("radiant.encoding"), local = TRUE)
 source(file.path(getOption("radiant.path.basics"), "app/init.R"), encoding = getOption("radiant.encoding"), local = TRUE)
 source(file.path(getOption("radiant.path.model"), "app/init.R"), encoding = getOption("radiant.encoding"), local = TRUE)
 source(file.path(getOption("radiant.path.design"), "app/init.R"), encoding = getOption("radiant.encoding"), local = TRUE)
@@ -22,6 +23,12 @@ source(file.path(getOption("radiant.path.design"), "app/init.R"), encoding = get
 ## loading urls and ui
 source("init.R", encoding = getOption("radiant.encoding"), local = TRUE)
 options(radiant.url.patterns = make_url_patterns())
+
+
+
+
+
+
 
 
 ## We don't want some menus item
