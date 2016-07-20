@@ -1,9 +1,40 @@
 shinyServer(function(input, output, session) {
 
   ## http://bioinfo1.med.unibs:3800/biostat/?code=anorexia -> opens anorexia.rda
-  query <- observe({parseQueryString(session$clientData$url_search)})
-  r_data = init_data(data_query = query)
+
   
+  init_data <- function() {
+
+    ## Joe Cheng: 'Datasets can change over time (i.e., the changedata function).
+    ## Therefore, the data need to be a reactive value so the other reactive functions
+    ## and outputs that depend on these datasets will know when they are changed.'
+    r_data <- reactiveValues()
+
+    # df_name <- getOption("radiant.init.data", default = "titanic")
+
+    isolate({
+      query <- parseQueryString(session$clientData$url_search)
+    })
+
+    if (!missing(query) && "code" %in% names(query)) {
+      data.in.pkg = data(package = "radiant.biostat")$results[, "Item"]
+
+      ## Check if the data file is in radiant.biostat
+      df_name = ifelse(query[["code"]] %in% data.in.pkg, query[["code"]], "titanic")
+    } else df_name <- getOption("radiant.init.data", default = "titanic")
+
+    df <- data(list = df_name, package = "radiant.biostat", envir = environment()) %>%
+      get
+
+
+    r_data[[df_name]] <- df
+    r_data[[paste0(df_name, "_descr")]] <- attr(df, "description")
+    r_data$datasetlist <- df_name
+    r_data$url <- NULL
+    r_data
+  }
+  
+
   ## source shared functions
   source(file.path(getOption("radiant.path.data"),"app/init.R"), encoding = getOption("radiant.encoding"), local = TRUE)
   source(file.path(getOption("radiant.path.data"),"app/radiant.R"), encoding = getOption("radiant.encoding"), local = TRUE)
