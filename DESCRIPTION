@@ -8,7 +8,10 @@ Description: Biostatistics menu for Radiant.
 Depends:
     R (>= 3.2.0),
     shiny (>= 0.13.2.9003),
-    radiant.data (>= 0.5.2),
+    radiant.data (>= 0.5.5),
+	radiant.design (>= 0.5.5),
+    radiant.basics (>= 0.5.5),
+    radiant.model (>= 0.5.5),
     ez,
     descr
 Imports:

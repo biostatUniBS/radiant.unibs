@@ -50,7 +50,7 @@ cross_tabs <- function(dataset, var1, var2,
     ## dat not needed in summary or plot
     rm(dat)
     
-    environment() %>% as.list %>% set_class(c("cross_tabs",class(.)))
+    environment() %>% as.list %>% add_class(c("cross_tabs",class(.)))
 }
 
 #' Summary method for the cross_tabs function
