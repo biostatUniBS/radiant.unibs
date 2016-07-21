@@ -1,10 +1,10 @@
-Package: radiant.biostat
+Package: radiant.unibs
 Type: Package
-Title: Biostastics menu for Radiant. Builds on the radiant.data, radiant.basics and radiant.model packages
-Version: 0.0.1
-Date: 2016-7-16
+Title: Radiant version for teaching in UniBS. Builds on the radiant.data, radiant.basics, radiant.model and radiant.biostat packages
+Version: 0.1.0
+Date: 2016-7-21
 Authors@R: person("Stefano", "Calza", , "stefano.calza@unibs.it", c("aut", "cre"))
-Description: Biostatistics menu for Radiant.
+Description: Radiant @ Unibs.
 Depends:
     R (>= 3.2.0),
     shiny (>= 0.13.2.9003),

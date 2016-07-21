@@ -1,6 +1,6 @@
 shinyServer(function(input, output, session) {
 
-  ## http://bioinfo1.med.unibs:3800/biostat/?code=anorexia -> opens anorexia.rda
+  ## http://bioinfo1.med.unibs:3800/unibs/?code=anorexia -> opens anorexia.rda
   
   
   init_data <- function() {
@@ -47,7 +47,7 @@ shinyServer(function(input, output, session) {
     source(file, encoding = getOption("radiant.encoding"), local = TRUE)
   
   ## list of radiant menu's to include
-  rmenus <- c("radiant.data","radiant.basics","radiant.design","radiant.model","radiant.biostat")
+  rmenus <- c("radiant.data","radiant.basics","radiant.design","radiant.model","radiant.biostat","radiant.unibs")
   
   ## packages to use for example data
   options(radiant.example.data = "radiant.biostat")
@@ -59,7 +59,7 @@ shinyServer(function(input, output, session) {
     ipath <- paste0(strsplit(i,"\\.")[[1]], collapse = ".path.")
     
     ## help ui
-    if(ipath != "radiant.path.biostat")
+    if(!ipath %in% c("radiant.path.biostat","radiant.path.unibs"))
       source(file.path(getOption(ipath), "app/help.R"), encoding = getOption("radiant.encoding"), local = TRUE)
     
     ## source analysis tools for each app
