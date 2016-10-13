@@ -185,10 +185,10 @@ shinyServer(function(input, output, session) {
 #     source(file, encoding = getOption("radiant.encoding"), local = TRUE)
 # 
 #   ## save state on refresh or browser close
-#   ## saveStateOnRefresh(session)
+#   saveStateOnRefresh(session)
 # 
 #     ## SC: stop app when session is ended, browser close or refresh
-#     session$onSessionEnded(function() {stopApp() })
+#     # session$onSessionEnded(function() {stopApp() })
 #     
 #     
 # })
