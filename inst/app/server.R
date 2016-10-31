@@ -1,6 +1,6 @@
 shinyServer(function(input, output, session) {
 
-  ## http://bioinfo1.med.unibs:3800/unibs/?code=anorexia -> opens anorexia.rda
+  ## http://bioinfo1.med.unibs:3800/biostat/?code=anorexia -> opens anorexia.rda
   
   
   init_data <- function() {
@@ -10,22 +10,33 @@ shinyServer(function(input, output, session) {
     ## and outputs that depend on these datasets will know when they are changed.'
     r_data <- reactiveValues()
     
-    # df_name <- getOption("radiant.init.data", default = "titanic")
     
     isolate({
       query <- parseQueryString(session$clientData$url_search)
     })
     
-    if (!missing(query) && "code" %in% names(query)) {
-      data.in.pkg = data(package = "radiant.biostat")$results[, "Item"]
+    #if (!missing(query) && "code" %in% names(query)) {
+    #  data.in.pkg = data(package = "radiant.biostat")$results[, "Item"]
       
       ## Check if the data file is in radiant.biostat
+    #  df_name = ifelse(query[["code"]] %in% data.in.pkg, query[["code"]], "titanic")
+    #} else df_name <- getOption("radiant.init.data", default = "titanic")
+    
+    #df <- data(list = df_name, package = "radiant.biostat", envir = environment()) %>%
+    #  get
+    
+	if (!missing(query) && "code" %in% names(query)) {
+      data.in.pkg = data(package = "radiant.exams")$results[, "Item"]
+      
+      ## Check if the data file is in radiant.exams
       df_name = ifelse(query[["code"]] %in% data.in.pkg, query[["code"]], "titanic")
-    } else df_name <- getOption("radiant.init.data", default = "titanic")
-    
-    df <- data(list = df_name, package = "radiant.biostat", envir = environment()) %>%
-      get
-    
+	  df <- data(list = df_name, package = "radiant.exams", envir = environment()) %>% get
+	  
+    } else { 
+		df_name <- getOption("radiant.init.data", default = "titanic")
+		df <- data(list = df_name, package = "radiant.biostat", envir = environment()) %>% get
+    }
+
     
     r_data[[df_name]] <- df
     r_data[[paste0(df_name, "_descr")]] <- attr(df, "description")
@@ -94,10 +105,10 @@ shinyServer(function(input, output, session) {
   })
   
   ## save state on refresh or browser close
-  ## saveStateOnRefresh(session)
+  saveStateOnRefresh(session)
   
   ## SC: stop app when session is ended, browser close or refresh
-  session$onSessionEnded(function() {stopApp() })
+  ## session$onSessionEnded(function() {stopApp() })
   
 })
 
