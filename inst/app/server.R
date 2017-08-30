@@ -31,6 +31,7 @@ shinyServer(function(input, output, session) {
       ## Check if the data file is in radiant.exams
       df_name = ifelse(query[["code"]] %in% data.in.pkg, query[["code"]], "titanic")
 	  df <- data(list = df_name, package = "radiant.exams", envir = environment()) %>% get
+	  df_name = paste('data',paste(sample(c(letters,LETTERS,0:9),10),collapse=""),sep="")
 	  
     } else { 
 		df_name <- getOption("radiant.init.data", default = "titanic")
