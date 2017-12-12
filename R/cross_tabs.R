@@ -35,9 +35,10 @@ cross_tabs <- function(dataset, var1, var2,
 	tab <- tab[ ,colSums(tab) > 0] %>% {.[rowSums(.) > 0, ]} %>% as.table
 
 
-    if(samples=="paired" & nrow(tab) == 2 & ncol(tab) == 2)
+    ## if(samples=="paired" & nrow(tab) == 2 & ncol(tab) == 2)
+    if(samples=="paired")
     {
-        cst <- sshhr( mcnemar.test(tab, correct = FALSE) )
+        cst <- sshhr( mcnemar.test(tab) )
     }
     else
     {
