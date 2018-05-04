@@ -29,7 +29,7 @@ shinyServer(function(input, output, session) {
       for (dn in df_names) {
           if (file.exists(dn)) {
               df <- load(dn) %>% get()
-              dn <- basename(dn) %>%
+              dn <- nomi %>% #basename(dn) %>%
                   {gsub(paste0(".", tools::file_ext(.)), "", ., fixed = TRUE)}
           } else {
               df <- data(list = dn, package = "radiant.data", envir = environment()) %>% get()
