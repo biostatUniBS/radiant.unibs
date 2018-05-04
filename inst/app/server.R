@@ -5,39 +5,41 @@ shinyServer(function(input, output, session) {
   
   init_data <- function(env = r_data) {
     
-    ## Joe Cheng: 'Datasets can change over time (i.e., the changedata function).
-    ## Therefore, the data need to be a reactive value so the other reactive functions
-    ## and outputs that depend on these datasets will know when they are changed.'
-
+      ## Joe Cheng: 'Datasets can change over time (i.e., the changedata function).
+      ## Therefore, the data need to be a reactive value so the other reactive functions
+      ## and outputs that depend on these datasets will know when they are changed.'
       r_info <- reactiveValues()
+      
+      isolate({
+          query <- parseQueryString(session$clientData$url_search)
+      })
+      
+      if (!missing(query) && "code" %in% names(query)) {
+          data.in.pkg = data(package = "radiant.exams")$results[, "Item"]
+          
+          df_names = ifelse(query[["code"]] %in% data.in.pkg, query[["code"]], "titanic")      
+          ## df_names <- getOption("radiant.init.data", default = c("diamonds", "titanic"))
+      } else
+          df_names <- getOption("radiant.init.data", default = c("diamonds", "titanic"))
 
-     isolate({
-      query <- parseQueryString(session$clientData$url_search)
-    })
-
-	if (!missing(query) && "code" %in% names(query)) {
-      data.in.pkg = data(package = "radiant.exams")$results[, "Item"]
-
-      df_names = ifelse(query[["code"]] %in% data.in.pkg, query[["code"]], "titanic")      
-  #df_names <- getOption("radiant.init.data", default = c("diamonds", "titanic"))
-  for (dn in df_names) {
-    if (file.exists(dn)) {
-      df <- load(dn) %>% get()
-      dn <- basename(dn) %>%
-        {gsub(paste0(".", tools::file_ext(.)), "", ., fixed = TRUE)}
-    } else {
-      df <- data(list = dn, package = "radiant.data", envir = environment()) %>% get()
-      r_info[[paste0(dn, "_lcmd")]] <- paste0(dn, " <- data(", dn, ", package = \"radiant.data\") %>% get()\nregister(\"", dn, "\")")
-    }
-    env[[dn]] <- df
-    makeReactiveBinding(dn, env = env)
-    r_info[[paste0(dn, "_descr")]] <- attr(df, "description")
-  }
-  r_info[["datasetlist"]] <-  paste('data',paste(sample(c(letters,LETTERS,0:9),10),collapse=""),sep="") #basename(df_names)
-  r_info[["url"]] <- NULL
-  r_info
-
-
+      for (dn in df_names) {
+          if (file.exists(dn)) {
+              df <- load(dn) %>% get()
+              dn <- basename(dn) %>%
+                  {gsub(paste0(".", tools::file_ext(.)), "", ., fixed = TRUE)}
+          } else {
+              df <- data(list = dn, package = "radiant.data", envir = environment()) %>% get()
+              r_info[[paste0(dn, "_lcmd")]] <- paste0(dn, " <- data(", dn, ", package = \"radiant.data\") %>% get()\nregister(\"", dn, "\")")
+          }
+          env[[dn]] <- df
+          makeReactiveBinding(dn, env = env)
+          r_info[[paste0(dn, "_descr")]] <- attr(df, "description")
+      }
+      r_info[["datasetlist"]] <-  paste('data',paste(sample(c(letters,LETTERS,0:9),10),collapse=""),sep="") #basename(df_names)
+      r_info[["url"]] <- NULL
+      r_info
+      
+      
 ###########################################
     #  r_data <- reactiveValues()
     
