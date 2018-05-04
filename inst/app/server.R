@@ -3,48 +3,70 @@ shinyServer(function(input, output, session) {
   ## http://bioinfo1.med.unibs:3800/biostat/?code=anorexia -> opens anorexia.rda
   
   
-  init_data <- function() {
+  init_data <- function(env = r_data) {
     
     ## Joe Cheng: 'Datasets can change over time (i.e., the changedata function).
     ## Therefore, the data need to be a reactive value so the other reactive functions
     ## and outputs that depend on these datasets will know when they are changed.'
-    r_data <- reactiveValues()
-    
-    
-    isolate({
+
+      r_info <- reactiveValues()
+
+     isolate({
       query <- parseQueryString(session$clientData$url_search)
     })
-    
-    #if (!missing(query) && "code" %in% names(query)) {
-    #  data.in.pkg = data(package = "radiant.biostat")$results[, "Item"]
-      
-      ## Check if the data file is in radiant.biostat
-    #  df_name = ifelse(query[["code"]] %in% data.in.pkg, query[["code"]], "titanic")
-    #} else df_name <- getOption("radiant.init.data", default = "titanic")
-    
-    #df <- data(list = df_name, package = "radiant.biostat", envir = environment()) %>%
-    #  get
-    
+
 	if (!missing(query) && "code" %in% names(query)) {
       data.in.pkg = data(package = "radiant.exams")$results[, "Item"]
+
+      df_names = ifelse(query[["code"]] %in% data.in.pkg, query[["code"]], "titanic")      
+  #df_names <- getOption("radiant.init.data", default = c("diamonds", "titanic"))
+  for (dn in df_names) {
+    if (file.exists(dn)) {
+      df <- load(dn) %>% get()
+      dn <- basename(dn) %>%
+        {gsub(paste0(".", tools::file_ext(.)), "", ., fixed = TRUE)}
+    } else {
+      df <- data(list = dn, package = "radiant.data", envir = environment()) %>% get()
+      r_info[[paste0(dn, "_lcmd")]] <- paste0(dn, " <- data(", dn, ", package = \"radiant.data\") %>% get()\nregister(\"", dn, "\")")
+    }
+    env[[dn]] <- df
+    makeReactiveBinding(dn, env = env)
+    r_info[[paste0(dn, "_descr")]] <- attr(df, "description")
+  }
+  r_info[["datasetlist"]] <-  paste('data',paste(sample(c(letters,LETTERS,0:9),10),collapse=""),sep="") #basename(df_names)
+  r_info[["url"]] <- NULL
+  r_info
+
+
+###########################################
+    #  r_data <- reactiveValues()
+    
+    
+    #isolate({
+    #  query <- parseQueryString(session$clientData$url_search)
+    #})
+    
+    
+      ##   if (!missing(query) && "code" %in% names(query)) {
+      ## data.in.pkg = data(package = "radiant.exams")$results[, "Item"]
       
       ## Check if the data file is in radiant.exams
-      df_name = ifelse(query[["code"]] %in% data.in.pkg, query[["code"]], "titanic")
-	  df <- data(list = df_name, package = "radiant.exams", envir = environment()) %>% get
-	  df_name = paste('data',paste(sample(c(letters,LETTERS,0:9),10),collapse=""),sep="")
+  ##     df_name = ifelse(query[["code"]] %in% data.in.pkg, query[["code"]], "titanic")
+  ##         df <- data(list = df_name, package = "radiant.exams", envir = environment()) %>% get
+  ##         df_name = paste('data',paste(sample(c(letters,LETTERS,0:9),10),collapse=""),sep="")
 	  
-    } else { 
-		df_name <- getOption("radiant.init.data", default = "titanic")
-		df <- data(list = df_name, package = "radiant.biostat", envir = environment()) %>% get
-    }
+  ##   } else { 
+  ##       	df_name <- getOption("radiant.init.data", default = "titanic")
+  ##       	df <- data(list = df_name, package = "radiant.biostat", envir = environment()) %>% get
+  ##   }
 
     
-    r_data[[df_name]] <- df
-    r_data[[paste0(df_name, "_descr")]] <- attr(df, "description")
-    r_data$datasetlist <- df_name
-    r_data$url <- NULL
-    r_data
-  }
+  ##   r_data[[df_name]] <- df
+  ##   r_data[[paste0(df_name, "_descr")]] <- attr(df, "description")
+  ##   r_data$datasetlist <- df_name
+  ##   r_data$url <- NULL
+  ##   r_data
+}
   
   
     
