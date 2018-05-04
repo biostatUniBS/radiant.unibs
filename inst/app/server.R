@@ -17,10 +17,14 @@ shinyServer(function(input, output, session) {
       if (!missing(query) && "code" %in% names(query)) {
           data.in.pkg = data(package = "radiant.exams")$results[, "Item"]
           
-          df_names = ifelse(query[["code"]] %in% data.in.pkg, query[["code"]], "titanic")      
-          ## df_names <- getOption("radiant.init.data", default = c("diamonds", "titanic"))
+          df_names = ifelse(query[["code"]] %in% data.in.pkg, query[["code"]], "titanic")
+          nomi = paste('data',paste(sample(c(letters,LETTERS,0:9),10),collapse=""),sep="")
+
       } else
-          df_names <- getOption("radiant.init.data", default = c("diamonds", "titanic"))
+          {
+              df_names <- getOption("radiant.init.data", default = c("diamonds", "titanic"))
+              nomi = basename(df_names)
+          }
 
       for (dn in df_names) {
           if (file.exists(dn)) {
@@ -35,7 +39,7 @@ shinyServer(function(input, output, session) {
           makeReactiveBinding(dn, env = env)
           r_info[[paste0(dn, "_descr")]] <- attr(df, "description")
       }
-      r_info[["datasetlist"]] <-  paste('data',paste(sample(c(letters,LETTERS,0:9),10),collapse=""),sep="") #basename(df_names)
+      r_info[["datasetlist"]] <- nomi
       r_info[["url"]] <- NULL
       r_info
       
