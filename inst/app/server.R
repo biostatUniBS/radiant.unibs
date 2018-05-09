@@ -16,7 +16,7 @@ shinyServer(function(input, output, session) {
   }
   
   ## list of radiant menu's to include
-  rmenus <- c("radiant.data", "radiant.design", "radiant.basics", "radiant.model", "radiant.biostat")
+  rmenus <- c("radiant.data", "radiant.design", "radiant.basics", "radiant.model")
   
   ## packages to use for example data
   options(radiant.example.data = rmenus)
