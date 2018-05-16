@@ -12,6 +12,7 @@ Depends:
 	radiant.design (>= 0.5.5),
     radiant.basics (>= 0.5.5),
     radiant.model (>= 0.5.5),
+	radiant.biostat,
     ez,
     descr
 Imports:
