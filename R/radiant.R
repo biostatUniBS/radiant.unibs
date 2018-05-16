@@ -1,9 +1,12 @@
-#' Launch Radiant in the default browser
+#' Launch radiant in the default browser
 #'
+#' @details See \url{https://radiant-rstats.github.io/docs} for documentation and tutorials
 #'
+#' @importFrom radiant.data launch
+#'
+#' @examples
+#' \dontrun{
+#' radiant()
+#' }
 #' @export
-radiant.unibs <- function() {
-  if (!"package:radiant.unibs" %in% search())
-    if (!require(radiant.unibs)) stop("Calling radiant.unibs start function but radiant.unibs is not installed.")
-  runApp(system.file("app", package = "radiant.unibs"), launch.browser = TRUE)
-}
+radiant.unibs <- function() radiant.data::launch(package = "radiant", run = "browser")
