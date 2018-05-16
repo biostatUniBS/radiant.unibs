@@ -1,7 +1,7 @@
 shinyServer(function(input, output, session) {
 
   
-  init_data <- function(env) {
+  init_data <- function(env=r_data) {
     r_info <- reactiveValues()
     
     isolate({
