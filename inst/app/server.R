@@ -21,7 +21,7 @@ shinyServer(function(input, output, session) {
     }
     
     r_data[[df_name]] <- df
-    makeReactiveBinding(df, env = r_data)
+    makeReactiveBinding(df_name, env = r_data)
     
     r_info[[paste0(df_name, "_descr")]] <- attr(df, "description")
     r_info$datasetlist <- df_name
