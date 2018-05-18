@@ -51,7 +51,8 @@ shinyServer(function(input, output, session) {
   rmenus <- c("radiant.data", "radiant.design", "radiant.basics", "radiant.model")#, "radiant.multivariate")
   
   ## packages to use for example data
-  options(radiant.example.data = rmenus)
+  ## options(radiant.example.data = rmenus)
+  options(radiant.example.data = "radiant.biostat")
   
   for (i in rmenus[-1]) {
     ## 'sourcing' radiant's package functions in the server.R environment
