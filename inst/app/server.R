@@ -67,7 +67,10 @@ shinyServer(function(input, output, session) {
     for (file in list.files(file.path(getOption(ipath), "app/tools/analysis"), pattern = "\\.(r|R)$", full.names = TRUE))
       source(file, encoding = getOption("radiant.encoding"), local = TRUE)
   }
-  
+
+    for (file in list.files(file.path(find.package("radiant.biostat"), "app/tools/analysis"), pattern = "\\.(r|R)$", full.names = TRUE))
+      source(file, encoding = getOption("radiant.encoding"), local = TRUE)
+    
   ## ui creation functions
   source(file.path(getOption("radiant.path.model"), "app/radiant.R"), encoding = getOption("radiant.encoding"), local = TRUE)
   
