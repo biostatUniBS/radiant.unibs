@@ -94,10 +94,14 @@ summary.cross_tabs <- function(object, check = "", dec = 2, ...) {
   if (object$data_filter %>% gsub("\\s", "", .) != "") {
     cat("Filter   :", gsub("\\n", "", object$data_filter), "\n")
   }
+  cat("Test     :", object$samples, "\n")
   cat("Variables:", paste0(c(object$var1, object$var2), collapse = ", "), "\n")
   #cat("Null hyp.: there is no association between", object$var1, "and", object$var2, "\n")
   #cat("Alt. hyp.: there is an association between", object$var1, "and", object$var2, "\n")
 
+  if(object$samples=="paired")
+    check = ""
+  
   rnames <- object$cst$observed %>% rownames() %>% c(., "Total")
   cnames <- object$cst$observed %>% colnames() %>% c(., "Total")
 
