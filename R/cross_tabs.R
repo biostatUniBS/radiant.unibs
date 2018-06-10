@@ -19,7 +19,8 @@
 #' @export
 #' 
 
-cross_tabs <- function(dataset, var1, var2, tab = NULL, data_filter = "") {
+cross_tabs <- function(dataset, var1, var2, tab = NULL, data_filter = "",
+                       samples="indipendent") {
 
   if (is.table(tab)) {
     df_name <- deparse(substitute(tab))
@@ -57,16 +58,25 @@ cross_tabs <- function(dataset, var1, var2, tab = NULL, data_filter = "") {
     rm(dataset)
   }
 
-  cst <- sshhr(chisq.test(tab, correct = FALSE))
+  ## if(samples=="paired" & nrow(tab) == 2 & ncol(tab) == 2)
+  if(samples=="paired")
+    {
+      cst <- sshhr( mcnemar.test(tab) )
+    }
+      else
+      {
+        cst <- sshhr(chisq.test(tab, correct = FALSE))
+        ## adding the % deviation table
+        cst$chi_sq <- with(cst, (observed - expected) ^ 2 / expected)
+}
 
-  ## adding the % deviation table
-  cst$chi_sq <- with(cst, (observed - expected) ^ 2 / expected)
 
   res <- tidy(cst) %>%
     mutate(parameter = as.integer(parameter))
   elow <- sum(cst$expected < 5)
 
   if (elow > 0) {
+    set.seed(1970) ## for repetability in exams
     res$p.value <- chisq.test(cst$observed, simulate.p.value = TRUE, B = 2000) %>% tidy() %>% .$p.value
     res$parameter <- paste0("*", res$parameter, "*")
   }
@@ -85,8 +95,8 @@ summary.cross_tabs <- function(object, check = "", dec = 2, ...) {
     cat("Filter   :", gsub("\\n", "", object$data_filter), "\n")
   }
   cat("Variables:", paste0(c(object$var1, object$var2), collapse = ", "), "\n")
-  cat("Null hyp.: there is no association between", object$var1, "and", object$var2, "\n")
-  cat("Alt. hyp.: there is an association between", object$var1, "and", object$var2, "\n")
+  #cat("Null hyp.: there is no association between", object$var1, "and", object$var2, "\n")
+  #cat("Alt. hyp.: there is an association between", object$var1, "and", object$var2, "\n")
 
   rnames <- object$cst$observed %>% rownames() %>% c(., "Total")
   cnames <- object$cst$observed %>% colnames() %>% c(., "Total")
