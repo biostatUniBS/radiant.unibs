@@ -72,26 +72,3 @@ options(radiant.shared_ui =
           )
 )
 
-
-help_menu <- function(hlp) {
-  tagList(
-    navbarMenu("", icon = icon("question-circle"),
-               tabPanel("Help", uiOutput(hlp), icon = icon("question"))
-               ## ,
-               ## tabPanel("Videos", uiOutput("help_videos"), icon = icon("film")),
-               ## tabPanel("About", uiOutput("help_about"), icon = icon("info")),
-               ## tabPanel(tags$a("", href = "http://radiant-rstats.github.io/docs/", target = "_blank",
-               ##          list(icon("globe"), "Radiant docs"))),
-               ## tabPanel(tags$a("", href = "https://github.com/vnijs/radiant/issues", target = "_blank",
-               ##          list(icon("github"), "Report issue")))
-    ),
-    tags$head(
-      tags$script(src = "js/session.js"),
-      tags$script(src = "js/returnTextAreaBinding.js"),
-      tags$script(src = "js/returnTextInputBinding.js"),
-      # tags$script(src = "js/draggable_modal.js"),
-      tags$script(src = "js/video_reset.js"),
-      tags$link(rel = "shortcut icon", href = "imgs/icon.png")
-    )
-  )
-}
