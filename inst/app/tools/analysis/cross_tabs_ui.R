@@ -148,12 +148,12 @@ observeEvent(input$cross_tabs_report, {
   inp_out <- list("", "")
   if (length(input$ct_check) > 0) {
     outputs <- c("summary", "plot")
-    inp_out[[1]] <- list(check = input$ct_check)
+    inp_out[[1]] <- list(check = input$ct_check,samples=input$ct_samples)
     inp_out[[2]] <- list(check = input$ct_check, custom = FALSE)
     figs <- TRUE
   } else {
     outputs <- "summary"
-    inp_out[[1]] <- list(check = "")
+    inp_out[[1]] <- list(check = "",samples=input$ct_samples)
     figs <- FALSE
   }
   
