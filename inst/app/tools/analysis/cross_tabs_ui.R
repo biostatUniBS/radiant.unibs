@@ -58,8 +58,13 @@ output$ui_cross_tabs <- renderUI({
         uiOutput("ui_ct_var1"),
         uiOutput("ui_ct_var2")
       ),
-      radioButtons(inputId = "ct_samples", label = "Test type:", ct_samples, inline = TRUE,
+      
+      radioButtons(inputId = "ct_samples", 
+                   label = "Test type:", 
+                   ct_samples, 
+                   inline = TRUE,
                    selected = state_init("ct_samples", ct_args$samples)),
+      
       checkboxGroupInput(
         "ct_check", NULL,
         choices = ct_check,
@@ -128,7 +133,7 @@ ct_available <- reactive({
 
 .summary_cross_tabs <- reactive({
   if (ct_available() != "available") return(ct_available())
-  summary(.cross_tabs(), check = input$ct_check)
+  summary(.cross_tabs(), check = input$ct_check,samples=input$ct_samples)
 })
 
 .plot_cross_tabs <- reactive({
