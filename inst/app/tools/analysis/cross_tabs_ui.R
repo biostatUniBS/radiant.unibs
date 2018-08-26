@@ -20,6 +20,7 @@ ct_inputs <- reactive({
   ## loop needed because reactive values don't allow single bracket indexing
   ct_args$data_filter <- if (input$show_filter) input$data_filter else ""
   ct_args$dataset <- input$dataset
+  ct_args$samples <- input$samples
   for (i in r_drop(names(ct_args)))
     ct_args[[i]] <- input[[paste0("ct_", i)]]
   ct_args
