@@ -133,7 +133,7 @@ ct_available <- reactive({
 
 .summary_cross_tabs <- reactive({
   if (ct_available() != "available") return(ct_available())
-  summary(.cross_tabs(), check = input$ct_check,samples=input$ct_samples)
+  summary(.cross_tabs(), check = input$ct_check, samples=input$ct_samples)
 })
 
 .plot_cross_tabs <- reactive({
@@ -148,12 +148,12 @@ observeEvent(input$cross_tabs_report, {
   inp_out <- list("", "")
   if (length(input$ct_check) > 0) {
     outputs <- c("summary", "plot")
-    inp_out[[1]] <- list(check = input$ct_check,samples=input$ct_samples)
+    inp_out[[1]] <- list(check = input$ct_check, samples=input$ct_samples)
     inp_out[[2]] <- list(check = input$ct_check, custom = FALSE)
     figs <- TRUE
   } else {
     outputs <- "summary"
-    inp_out[[1]] <- list(check = "",samples=input$ct_samples)
+    inp_out[[1]] <- list(check = "", samples=input$ct_samples)
     figs <- FALSE
   }
   

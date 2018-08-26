@@ -81,6 +81,8 @@ cross_tabs <- function(dataset, var1, var2, tab = NULL, data_filter = "",
     res$parameter <- paste0("*", res$parameter, "*")
   }
 
+  res$samples = samples
+  
   as.list(environment()) %>% add_class("cross_tabs")
 }
 
