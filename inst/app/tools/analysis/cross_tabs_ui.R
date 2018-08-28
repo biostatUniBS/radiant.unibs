@@ -20,7 +20,7 @@ ct_inputs <- reactive({
   ## loop needed because reactive values don't allow single bracket indexing
   ct_args$data_filter <- if (input$show_filter) input$data_filter else ""
   ct_args$dataset <- input$dataset
-  ct_args$samples <- input$samples
+  ct_args$samples <- input$ct_samples
   for (i in r_drop(names(ct_args)))
     ct_args[[i]] <- input[[paste0("ct_", i)]]
   ct_args
@@ -133,7 +133,7 @@ ct_available <- reactive({
 
 .summary_cross_tabs <- reactive({
   if (ct_available() != "available") return(ct_available())
-  summary(.cross_tabs(), check = input$ct_check, samples=input$ct_samples)
+  summary(.cross_tabs(), check = input$ct_check)
 })
 
 .plot_cross_tabs <- reactive({

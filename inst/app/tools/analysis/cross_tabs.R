@@ -18,9 +18,8 @@
 #'
 #' @export
 #' 
-
 cross_tabs <- function(dataset, var1, var2, tab = NULL, data_filter = "",
-                       samples="indipendent") {
+                       samples="independent") {
 
   if (is.table(tab)) {
     df_name <- deparse(substitute(tab))
@@ -57,7 +56,7 @@ cross_tabs <- function(dataset, var1, var2, tab = NULL, data_filter = "",
     ## dataset not needed in summary or plot
     rm(dataset)
   }
-
+  
   ## if(samples=="paired" & nrow(tab) == 2 & ncol(tab) == 2)
   if(samples=="paired")
     {
