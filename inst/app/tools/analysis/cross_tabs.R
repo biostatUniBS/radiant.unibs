@@ -17,8 +17,9 @@
 #' @seealso \code{\link{plot.cross_tabs}} to plot results
 #'
 #' @export
-#' 
+#'
 cross_tabs <- function(dataset, var1, var2, tab = NULL, data_filter = "",
+                       envir = parent.frame(),
                        samples="independent") {
 
   if (is.table(tab)) {
@@ -36,17 +37,22 @@ cross_tabs <- function(dataset, var1, var2, tab = NULL, data_filter = "",
     }
   } else {
     df_name <- if (!is_string(dataset)) deparse(substitute(dataset)) else dataset
-    dataset <- get_data(dataset, c(var1, var2), filt = data_filter)
+    dataset <- get_data(dataset, c(var1, var2), filt = data_filter, envir = envir)
 
     ## Use simulated p-values when
     # http://stats.stackexchange.com/questions/100976/n-1-pearsons-chi-square-in-r
     # http://stats.stackexchange.com/questions/14226/given-the-power-of-computers-these-days-is-there-ever-a-reason-to-do-a-chi-squa/14230#14230
     # http://stats.stackexchange.com/questions/62445/rules-to-apply-monte-carlo-simulation-of-p-values-for-chi-squared-test
 
-    if (any(summarise_all(dataset, funs(does_vary)) == FALSE)) {
-      return("One or more selected variables show no variation. Please select other variables." %>%
-        add_class("cross_tabs"))
+    not_vary <- colnames(dataset)[summarise_all(dataset, does_vary) == FALSE]
+    if (length(not_vary) > 0) {
+      return(paste0("The following variable(s) show no variation. Please select other variables.\n\n** ", paste0(not_vary, collapse = ", "), " **") %>%
+               add_class("cross_tabs"))
     }
+    # if (any(summarise_all(dataset, funs(does_vary)) == FALSE)) {
+    #   return("One or more selected variables show no variation. Please select other variables." %>%
+    #     add_class("cross_tabs"))
+    # }
 
     tab <- table(dataset[[var1]], dataset[[var2]])
     tab[is.na(tab)] <- 0
@@ -56,7 +62,7 @@ cross_tabs <- function(dataset, var1, var2, tab = NULL, data_filter = "",
     ## dataset not needed in summary or plot
     rm(dataset)
   }
-  
+
   ## if(samples=="paired" & nrow(tab) == 2 & ncol(tab) == 2)
   if(samples=="paired")
     {
@@ -81,7 +87,9 @@ cross_tabs <- function(dataset, var1, var2, tab = NULL, data_filter = "",
   }
 
   res$samples = samples
-  
+
+  rm(envir)
+
   as.list(environment()) %>% add_class("cross_tabs")
 }
 
@@ -102,7 +110,7 @@ summary.cross_tabs <- function(object, check = "", dec = 2, ...) {
 
   if(object$samples=="paired")
     check = ""
-  
+
   rnames <- object$cst$observed %>% rownames() %>% c(., "Total")
   cnames <- object$cst$observed %>% colnames() %>% c(., "Total")
 
@@ -219,14 +227,14 @@ summary.cross_tabs <- function(object, check = "", dec = 2, ...) {
 ##     else
 ##     {
 ##         cst <- sshhr( chisq.test(tab, correct = FALSE) )
-        
+
 ##         ## adding the % deviation table
 ##         cst$deviation <- with(cst, (observed-expected) / expected)
 ##         cst$chi_sq	<- with(cst, (observed - expected)^2 / expected)
 ##     }
 ##     ## dat not needed in summary or plot
 ##     rm(dat)
-    
+
 ##     environment() %>% as.list %>% add_class(c("cross_tabs",class(.)))
 ## }
 
@@ -265,7 +273,7 @@ summary.cross_tabs <- function(object, check = "", dec = 2, ...) {
 ##     if(object$samples=="paired")
 ##         check = ""
 
-    
+
 ## 	object$cst$observed %>% rownames %>% c(., "Total") -> rnames
 ## 	object$cst$observed %>% colnames %>% c(., "Total") -> cnames
 
