@@ -1,6 +1,5 @@
 #### From radiant.basics
 
-
 ## alternative hypothesis options
 ct_check <- c(
   "Observed" = "observed", "Expected" = "expected",
@@ -81,7 +80,7 @@ output$ui_cross_tabs <- renderUI({
 })
 
 ct_plot <- reactive({
-  list(plot_width = 650, plot_height = 400 * length(input$ct_check))
+  list(plot_width = 650, plot_height = 400 * max(length(input$ct_check), 1))
 })
 
 ct_plot_width <- function()
@@ -140,6 +139,7 @@ ct_available <- reactive({
 
 .plot_cross_tabs <- reactive({
   if (ct_available() != "available") return(ct_available())
+  validate(need(input$ct_check, "\n\n\n           Nothing to plot. Please select a plot type"))
   withProgress(message = "Generating plots", value = 1, {
     plot(.cross_tabs(), check = input$ct_check, shiny = TRUE)
   })
@@ -150,7 +150,7 @@ observeEvent(input$cross_tabs_report, {
   inp_out <- list("", "")
   if (length(input$ct_check) > 0) {
     outputs <- c("summary", "plot")
-    inp_out[[1]] <- list(check = input$ct_check, samples=input$ct_samples)
+    inp_out[[1]] <- list(check = input$ct_check,samples=input$ct_samples)
     inp_out[[2]] <- list(check = input$ct_check, custom = FALSE)
     figs <- TRUE
   } else {
@@ -173,10 +173,10 @@ observeEvent(input$cross_tabs_report, {
 download_handler(
   id = "dlp_cross_tabs",
   fun = download_handler_plot,
-  fn = paste0(input$dataset, "_cross_tabs.png"),
-  caption = "Download cross-tabs plot",
+  fn = function() paste0(input$dataset, "_cross_tabs"),
+  type = "png",
+  caption = "Save cross-tabs plot",
   plot = .plot_cross_tabs,
   width = ct_plot_width,
   height = ct_plot_height
 )
-
