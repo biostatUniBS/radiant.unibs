@@ -40,7 +40,7 @@ output$ui_ct_var1 <- renderUI({
 output$ui_ct_var2 <- renderUI({
   if (not_available(input$ct_var1)) return()
   vars <- c("None" = "", groupable_vars())
-  
+
   if (length(vars) > 0) vars <- vars[-which(vars == input$ct_var1)]
   selectInput(
     inputId = "ct_var2", label = "Select a categorical variable:",
@@ -58,13 +58,13 @@ output$ui_cross_tabs <- renderUI({
         uiOutput("ui_ct_var1"),
         uiOutput("ui_ct_var2")
       ),
-      
-      radioButtons(inputId = "ct_samples", 
-                   label = "Test type:", 
-                   ct_samples, 
+
+      radioButtons(inputId = "ct_samples",
+                   label = "Test type:",
+                   ct_samples,
                    inline = TRUE,
                    selected = state_init("ct_samples", ct_args$samples)),
-      
+
       checkboxGroupInput(
         "ct_check", NULL,
         choices = ct_check,
@@ -98,7 +98,7 @@ output$cross_tabs <- renderUI({
     height_fun = "ct_plot_height",
     width_fun = "ct_plot_width"
   )
-  
+
   ## two separate tabs
   ct_output_panels <- tabsetPanel(
     id = "tabs_cross_tabs",
@@ -109,7 +109,7 @@ output$cross_tabs <- renderUI({
       plotOutput("plot_cross_tabs", width = "100%", height = "100%")
     )
   )
-  
+
   stat_tab_panel(
     menu = "Basics > Tables",
     tool = "Cross-tabs",
@@ -120,7 +120,7 @@ output$cross_tabs <- renderUI({
 
 ct_available <- reactive({
   if (not_available(input$ct_var1) || not_available(input$ct_var2)) {
-    "This analysis requires two categorical variables. Both must have two or more levels.\nIf these variable types are not available please select another dataset.\n\n" %>% 
+    "This analysis requires two categorical variables. Both must have two or more levels.\nIf these variable types are not available please select another dataset.\n\n" %>%
       suggest_data("newspaper")
   } else {
     "available"
@@ -128,7 +128,9 @@ ct_available <- reactive({
 })
 
 .cross_tabs <- reactive({
-  do.call(cross_tabs, ct_inputs())
+  cti <- ct_inputs()
+  cti$envir <- r_data
+  do.call(cross_tabs, cti)
 })
 
 .summary_cross_tabs <- reactive({
@@ -156,7 +158,7 @@ observeEvent(input$cross_tabs_report, {
     inp_out[[1]] <- list(check = "", samples=input$ct_samples)
     figs <- FALSE
   }
-  
+
   update_report(
     inp_main = clean_args(ct_inputs(), ct_args),
     inp_out = inp_out,
@@ -169,8 +171,8 @@ observeEvent(input$cross_tabs_report, {
 })
 
 download_handler(
-  id = "dlp_cross_tabs", 
-  fun = download_handler_plot, 
+  id = "dlp_cross_tabs",
+  fun = download_handler_plot,
   fn = paste0(input$dataset, "_cross_tabs.png"),
   caption = "Download cross-tabs plot",
   plot = .plot_cross_tabs,

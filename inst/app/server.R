@@ -1,6 +1,7 @@
 shinyServer(function(input, output, session) {
 
 
+
   init_data <- function(env=r_data) {
     r_info <- reactiveValues()
 
@@ -29,12 +30,12 @@ shinyServer(function(input, output, session) {
     r_info
   }
 
-
+  summary.correlation <- radiant.basics:::summary.correlation
   enc <- getOption("radiant.encoding")
 
   ## source shared functions
-  source(file.path(getOption("radiant.path.data"), "app/init.R"), encoding = getOption("radiant.encoding"), local = TRUE)
-  source(file.path(getOption("radiant.path.data"), "app/radiant.R"), encoding = getOption("radiant.encoding"), local = TRUE)
+  source(file.path(getOption("radiant.path.data"), "app/init.R"), encoding = enc, local = TRUE)
+  source(file.path(getOption("radiant.path.data"), "app/radiant.R"), encoding = enc, local = TRUE)
 
   ## source data & app tools from radiant.data
   for (file in list.files(
