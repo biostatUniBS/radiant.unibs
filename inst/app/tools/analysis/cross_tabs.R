@@ -69,11 +69,11 @@ cross_tabs <- function(dataset, var1, var2, tab = NULL, data_filter = "",
       cst <- sshhr( mcnemar.test(tab) )
     }
       else
-      {
+    {
         cst <- sshhr(chisq.test(tab, correct = FALSE))
         ## adding the % deviation table
         cst$chi_sq <- with(cst, (observed - expected) ^ 2 / expected)
-}
+    }
 
 
   res <- tidy(cst) %>%
@@ -116,87 +116,100 @@ summary.cross_tabs <- function(object, check = "", dec = 2, ...) {
 
   if ("observed" %in% check) {
     cat("\nObserved:\n")
-    object$cst$observed %>%
+    observed <- object$cst$observed %>%
       rbind(colSums(.)) %>%
       set_rownames(rnames) %>%
       cbind(rowSums(.)) %>%
       set_colnames(cnames) %>%
-      format(big.mark = ",", scientific = FALSE) %>%
-      print(quote = FALSE)
+      format(big.mark = ",", scientific = FALSE)
+
+    names(attributes(observed)$dimnames) <- c(object$var1, object$var2)
+    print(observed, quote = FALSE)
   }
 
   if ("expected" %in% check) {
     cat("\nExpected: (row total x column total) / total\n")
-    object$cst$expected %>%
+    expected <- object$cst$expected %>%
       rbind(colSums(.)) %>%
       set_rownames(rnames) %>%
       cbind(rowSums(.)) %>%
       set_colnames(cnames) %>%
       round(dec) %>%
-      format(big.mark = ",", scientific = FALSE) %>%
-      print(quote = FALSE)
+      format(big.mark = ",", scientific = FALSE)
+
+    names(attributes(expected)$dimnames) <- c(object$var1, object$var2)
+    print(expected, quote = FALSE)
   }
 
   if ("chi_sq" %in% check) {
     cat("\nContribution to chi-squared: (o - e)^2 / e\n")
-    object$cst$chi_sq %>%
+    chi_sq <- object$cst$chi_sq %>%
       rbind(colSums(.)) %>%
       set_rownames(rnames) %>%
       cbind(rowSums(.)) %>%
       set_colnames(cnames) %>%
       round(dec) %>%
-      format(big.mark = ",", scientific = FALSE) %>%
-      print(quote = FALSE)
+      format(big.mark = ",", scientific = FALSE)
+
+    names(attributes(chi_sq)$dimnames) <- c(object$var1, object$var2)
+    print(chi_sq, quote = FALSE)
   }
 
   if ("dev_std" %in% check) {
     cat("\nDeviation standardized: (o - e) / sqrt(e)\n")
-    print(round(object$cst$residuals, dec)) ## standardized residuals
+    resid <- round(object$cst$residuals, dec) ## standardized residuals
+    names(attributes(resid)$dimnames) <- c(object$var1, object$var2)
+    print(resid)
   }
 
   if ("row_perc" %in% check) {
     cat("\nRow percentages:\n")
-    object$cst$observed %>%
+    row_perc <- object$cst$observed %>%
       rbind(colSums(.)) %>%
       set_rownames(rnames) %>%
       cbind(rowSums(.)) %>%
       set_colnames(cnames) %>%
       {. / .[, "Total"]} %>%
-      round(dec) %>%
-      print()
+      round(dec)
+
+    names(attributes(row_perc)$dimnames) <- c(object$var1, object$var2)
+    print(row_perc)
   }
 
   if ("col_perc" %in% check) {
     cat("\nColumn percentages:\n")
-    object$cst$observed %>%
+    col_perc <- object$cst$observed %>%
       rbind(colSums(.)) %>%
       set_rownames(rnames) %>%
       cbind(rowSums(.)) %>%
       set_colnames(cnames) %>%
       {t(.) / .["Total", ]} %>%
       t() %>%
-      round(dec) %>%
-      print()
+      round(dec)
+
+    names(attributes(col_perc)$dimnames) <- c(object$var1, object$var2)
+    print(col_perc)
   }
 
   if ("perc" %in% check) {
     cat("\nProbability table:\n")
-    object$cst$observed %>%
+    perc <- object$cst$observed %>%
       rbind(colSums(.)) %>%
       set_rownames(rnames) %>%
       cbind(rowSums(.)) %>%
       set_colnames(cnames) %>%
       {. / .["Total", "Total"]} %>%
-      round(dec) %>%
-      print()
+      round(dec)
+
+    names(attributes(perc)$dimnames) <- c(object$var1, object$var2)
+    print(perc)
   }
 
   object$res <- format_df(object$res, dec = dec + 1, mark = ",")
 
   if (object$res$p.value < .001) object$res$p.value <- "< .001"
-    cat(paste0("\nChi-squared: ", object$res$statistic, " df(", object$res$parameter, "), p.value ", object$res$p.value), "\n\n")
-    if(object$samples != "paired")
-        cat(paste(sprintf("%.1f", 100 * (object$elow / length(object$cst$expected))), "% of cells have expected values below 5\n"), sep = "")
+  cat(paste0("\nChi-squared: ", object$res$statistic, " df(", object$res$parameter, "), p.value ", object$res$p.value), "\n\n")
+  cat(paste(sprintf("%.1f", 100 * (object$elow / length(object$cst$expected))), "% of cells have expected values below 5\n"), sep = "")
   if (object$elow > 0) cat("p.value for chi-squared statistics obtained using simulation (2,000 replicates)")
 }
 
