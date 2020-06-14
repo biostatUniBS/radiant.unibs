@@ -109,7 +109,7 @@ summary.cross_tabs <- function(object, check = "", dec = 2, ...) {
   #cat("Alt. hyp.: there is an association between", object$var1, "and", object$var2, "\n")
 
   if(object$samples=="paired")
-    check = ""
+    check = check[!check %in% c("expected","chi_sq","dev_std","col_perc","row_perc","perc")]
 
   rnames <- object$cst$observed %>% rownames() %>% c(., "Total")
   cnames <- object$cst$observed %>% colnames() %>% c(., "Total")
