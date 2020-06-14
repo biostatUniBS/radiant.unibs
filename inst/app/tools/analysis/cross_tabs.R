@@ -66,7 +66,8 @@ cross_tabs <- function(dataset, var1, var2, tab = NULL, data_filter = "",
   ## if(samples=="paired" & nrow(tab) == 2 & ncol(tab) == 2)
   if(samples=="paired")
     {
-      cst <- sshhr( mcnemar.test(tab) )
+      cst <- sshhr(mcnemar.test(tab))
+      cst$observed = tab
     }
       else
     {
